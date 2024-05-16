@@ -13,28 +13,28 @@ Easy-GPU-PV does the following...
 ### Prerequisites:
 * Windows 10 20H1+ Pro, Enterprise or Education OR Windows 11 Pro, Enterprise or Education.  Windows 11 on host and VM is preferred due to better compatibility.  
 * Matched Windows versions between the host and VM. Mismatches may cause compatibility issues, blue-screens, or other issues. (Win10 21H1 + Win10 21H1, or Win11 21H2 + Win11 21H2, for example)  
-* Desktop Computer with dedicated NVIDIA/AMD GPU or Integrated Intel GPU - Laptops with NVIDIA GPUs are not supported at this time, but Intel integrated GPUs work on laptops.  GPU must support hardware video encoding (NVIDIA NVENC, Intel Quicksync or AMD AMF).  
-* Latest GPU driver from Intel.com or NVIDIA.com, don't rely on Device manager or Windows update.  
-* Latest Windows 10 ISO [downloaded from here](https://www.microsoft.com/en-gb/software-download/windows10ISO) / Windows 11 ISO [downloaded from here.](https://www.microsoft.com/en-us/software-download/windows11) - Do not use Media Creation Tool, if no direct ISO link is available, follow [this guide.](https://www.nextofwindows.com/downloading-windows-10-iso-images-using-rufus)
+* Desktop Computer with dedicated AMDGPU; must support hardware video encoding (NVIDIA NVENC, Intel Quicksync or AMD AMF).  
+* Latest Pro / Adredalin driver.  
+* Windows 11 ISO [downloaded from here.](https://www.microsoft.com/en-us/software-download/windows11) - Do not use Media Creation Tool, if no direct ISO link is available, use Rufus (available on the 'Windows Store' or "https://rufus.ie/downloads".)
 * Virtualisation enabled in the motherboard and [Hyper-V fully enabled](https://docs.microsoft.com/en-us/virtualization/hyper-v-on-windows/quick-start/enable-hyper-v) on the Windows 10/ 11 OS (requires reboot).  
-* Allow Powershell scripts to run on your system - typically by running "Set-ExecutionPolicy unrestricted" in Powershell running as Administrator.  
+* Allow Powershell scripts to run on your system  ("Set-ExecutionPolicy unrestricted" in Powershell running as Administrator.)  
 
 ### Instructions
 1. Make sure your system meets the prerequisites.
-2. [Download the Repo and extract.](https://github.com/jamesstringerparsec/Easy-GPU-PV/archive/refs/heads/main.zip)
-3. Search your system for Powershell ISE and run as Administrator.
-4. In the extracted folder you downloaded, open PreChecks.ps1 in Powershell ISE.  Run the files from within the extracted folder. Do not move them.
-5. Open and Run PreChecks.ps1 in Powershell ISE using the green play button and copy the GPU Listed (or the warnings that you need to fix).
-6. Open CopyFilesToVM.ps1 Powershell ISE and edit the params section at the top of the file, you need to be careful about how much ram, storage and hard drive you give it as your system needs to have that available.  On Windows 10 the GPUName must be left as "AUTO", In Windows 11 it can be either "AUTO" or the specific name of the GPU you want to partition exactly how it appears in PreChecks.ps1.  Additionally, you need to provide the path to the Windows 10/11 ISO file you downloaded.
-7. Run CopyFilesToVM.ps1 with your changes to the params section - this may take 5-10 minutes.
-8. Open and sign into Parsec on the VM.  You can use Parsec to connect to the VM up to 4K60FPS.
+2. [Download the Repo and extract.
+3. Search your system for Powershell ISE / VSCode and run as Administrator.
+4. In the extracted folder you downloaded, open PreChecks.ps1 in IDE.  Run the files from within the extracted folder. Do not move them.
+5. Open and Run PreChecks.ps1 in IDE.
+6. Open CopyFilesToVM.ps1 Powershell ISE and edit the "params" section at the top of the file. GPUName can be either "AUTO" or the specific name of the GPU you want to partition exactly how it appears in PreChecks.ps1.  Additionally, you need to provide the path to the Windows 11 ISO.
+7. Run CopyFilesToVM.ps1 with your changes to the params section.
+8. Open and sign into Parsec on the VM.  (You can use Parsec to connect to the VM up to 4K60FPS.)
 9. You should be good to go!
 
 ### Upgrading GPU Drivers when you update the host GPU Drivers
-It's important to update the VM GPU Drivers after you have updated the Host GPUs drivers. You can do this by...  
+It's important to update the VM GPU Drivers after you have updated the Host GPUs drivers.
 1. Reboot the host after updating GPU Drivers.  
 2. Open Powershell as administrator and change directory (CD) to the path that CopyFilesToVM.ps1 and Update-VMGpuPartitionDriver.ps1 are located. 
-3. Run ```Update-VMGpuPartitionDriver.ps1 -VMName "Name of your VM" -GPUName "Name of your GPU"```    (Windows 10 GPU name must be "AUTO")
+3. Run ```Update-VMGpuPartitionDriver.ps1 -VMName "Name of your VM" -GPUName "Name of your GPU"```   
 
 ### Values
   ```VMName = "GPUP"``` - Name of VM in Hyper-V and the computername / hostname  
@@ -59,10 +59,11 @@ It's important to update the VM GPU Drivers after you have updated the Host GPUs
 
 ### Thanks to:  
 - [Hyper-ConvertImage](https://github.com/tabs-not-spaces/Hyper-ConvertImage) for creating an updated version of [Convert-WindowsImage](https://github.com/MicrosoftDocs/Virtualization-Documentation/tree/master/hyperv-tools/Convert-WindowsImage) that is compatible with Windows 10 and 11.
-- [gawainXX](https://github.com/gawainXX) for help testing and pointing out bugs and feature improvements.  
+- [gawainXX](https://github.com/gawainXX) for help testing and pointing out bugs and feature improvements.
+- [Easy-GPU-V](https://github.com/jamesstringerparsec/Easy-GPU-PV) for allowing plebs like us to fork your fantastic repo.
 
 
-### Notes:    
+*** ### Notes: ***    
 - After you have signed into Parsec on the VM, always use Parsec to connect to the VM.  Keep the Microsft Hyper-V Video adapter disabled. Using RDP and Hyper-V Enhanced Session mode will result in broken behaviour and black screens in Parsec.  RDP and the Hyper-V video adapter only offer a maximum of 30FPS. Using Parsec will allow you to use up to 4k60 FPS.
 - If you get "ERROR  : Cannot bind argument to parameter 'Path' because it is null." this probably means you used Media Creation Tool to download the ISO.  You unfortunately cannot use that, if you don't see a direct ISO download link at the Microsoft page, follow [this guide.](https://www.nextofwindows.com/downloading-windows-10-iso-images-using-rufus)  
 - Your GPU on the host will have a Microsoft driver in device manager, rather than an nvidia/intel/amd driver. As long as it doesn't have a yellow triangle over top of the device in device manager, it's working correctly.  
